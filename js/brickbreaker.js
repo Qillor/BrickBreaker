@@ -1,6 +1,8 @@
 var c = document.getElementById("myCanvas");
 /** @type {CanvasRenderingContext2D} */
 var ctx = c.getContext("2d");
+var ballx = 0;
+var bally = 150;
 
 function brick() {
     ctx.beginPath();
@@ -16,10 +18,10 @@ function brick() {
 
 function ball(){
     ctx.beginPath();
-    ctx.arc(300, 300, 25, 0, 2 * Math.PI);
+    ctx.arc(ballx, bally, 25, 0, 2 * Math.PI);
     ctx.stroke();
     ctx.closePath();
-  };
+}
  
 function paddle() {
     ctx.beginPath();
@@ -33,6 +35,9 @@ function components(){
     ball();
     brick();
     paddle();
+
+    ballx+=5;
+    bally+=5;
 }
 
 setInterval(components, 20);
