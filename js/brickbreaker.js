@@ -28,14 +28,14 @@ function ball() {
 
 function paddle() {
     ctx.beginPath();
-    ctx.rect(xaxis, 400, 60, 10);
+    ctx.rect(xaxis, c.height-10, 60, 10);
     ctx.fillstyle = "#00ffff"
     ctx.fill(); 
     ctx.closePath();
 }
 
 function components() {
-    ctx.clearRect(0, 0, c.Width, c.Height);
+    ctx.clearRect(0, 0, c.width, c.height);
     ball();
     brick();
     paddle();
@@ -49,18 +49,23 @@ function components() {
 
 
 function keyDown(event) {
-    if (event.keyCode == 39)
+    if (event.keyCode == 39){
         right = true;
-    if (event.keyCode == 37)
-        left = true;
+    }
+    if (event.keyCode == 37){
+        left = true;   
+        ballx += 5;
+        bally += 5;
+    }
 }
 
 function keyUp(event) {
-    if (event.keyCode == 39)
+    if (event.keyCode == 39){
         right = false;
-    if (event.keyCode == 37)
+    }
+    if (event.keyCode == 37){
         left = false;
-
+    }
 }
 
 document.addEventListener("keydown", keyDown, false);
