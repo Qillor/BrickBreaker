@@ -6,7 +6,8 @@ var right = false;
 var xaxis = 0;
 var ballx = 0;
 var bally = 0;
-
+var gravity = true;
+var gravityright = true;
 function brick() {
     ctx.beginPath();
     for (x = 2; x < 600; x += 50) {
@@ -28,9 +29,9 @@ function ball() {
 
 function paddle() {
     ctx.beginPath();
-    ctx.rect(xaxis, c.height-10, 60, 10);
+    ctx.rect(xaxis, c.height - 10, 60, 10);
     ctx.fillstyle = "#00ffff"
-    ctx.fill(); 
+    ctx.fill();
     ctx.closePath();
 }
 
@@ -39,31 +40,58 @@ function components() {
     ball();
     brick();
     paddle();
-  
+
     if (right == true)
         xaxis += 5;
     if (left == true)
         xaxis -= 5;
-    
+
+
+
+    if (bally >= c.height - 35) {
+        gravity = false;
+    }
+    if (bally <= c.height - 355) {
+        gravity = true;
+    }
+
+    if (gravity) {
+        bally += 2;
+    } else {
+        bally -= 2;
+    }
+
+
+
+    if (ballx >= c.width - 25) {
+        gravityright = false;
+    }
+    if (ballx <= 25) {
+        gravityright = true;
+    }
+
+    if (gravityright) {
+        ballx += 2;
+    } else {
+        ballx -= 2;
+    }
 }
 
-
 function keyDown(event) {
-    if (event.keyCode == 39){
+    if (event.keyCode == 39) {
         right = true;
     }
-    if (event.keyCode == 37){
-        left = true;   
-        ballx += 5;
-        bally += 5;
+    if (event.keyCode == 37) {
+        left = true;
+
     }
 }
 
 function keyUp(event) {
-    if (event.keyCode == 39){
+    if (event.keyCode == 39) {
         right = false;
     }
-    if (event.keyCode == 37){
+    if (event.keyCode == 37) {
         left = false;
     }
 }
