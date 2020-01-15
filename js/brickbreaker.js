@@ -4,9 +4,10 @@ var c = document.getElementById("myCanvas");
 /** @type {CanvasRenderingContext2D} */
 /*Declaring variables */
 var ctx = c.getContext("2d");
+var contacty = 330;
 var left = false;
 var right = false;
-var xaxis = c.width / 2-30;
+var xaxis = c.width / 2 - 30;
 var ballx = c.width / 2;
 var bally = c.height - 35;
 var gravity = true;
@@ -44,10 +45,14 @@ then the brick that got hit will dissapear.
 function contact() {
     for (icol = 0; icol < 12; ++icol) {
         for (irow = 0; irow < 3; ++irow) {
-            var xpos=bricks[icol][irow].bx;
-            var ypos=bricks[icol][irow].by;
-            if (ballx >= xpos && ballx <=(xpos + 45)) {
+            var xpos = bricks[icol][irow].bx;
+            var ypos = bricks[icol][irow].by;
+            if (ballx >= xpos && ballx <= (xpos + 45)) {
                 if ((bally - 25) >= ypos && (bally - 25) <= (ypos + 45)) {
+                    /*Gotta figure out how to set contacty higher when the brick is missing*/
+                    if (bricks[icol][irow].exist == 0) {
+                        contacty = 330 + (50 * irow);
+                    }
                     bricks[icol][irow].exist = 0;
                     gravity = true;
                 }
@@ -88,12 +93,18 @@ function components() {
 
 
     /* Responsible for gravity up and down.*/
-    if (bally >= c.height - 35) {
-        gravity = false;
+    if (ballx > xaxis && ballx < xaxis + 60) {
+        if (bally >= c.height - 35) {
+            gravity = false;
+        }
     }
-    if (bally <= c.height - 355) {
+
+
+
+    if (bally <= c.height - contacty) {
         gravity = true;
     }
+
 
     if (gravity) {
         bally += 2;
