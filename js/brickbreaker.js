@@ -9,6 +9,7 @@ var left = false;
 var right = false;
 var xaxis = c.width / 2 - 30;
 var ballx = c.width / 2;
+/*ball start pos */
 var bally = c.height - 35;
 var gravity = true;
 var gravityright = true;
@@ -51,10 +52,14 @@ function contact() {
                 if ((bally - 25) >= ypos && (bally - 25) <= (ypos + 45)) {
                     /*Gotta figure out how to set contacty higher when the brick is missing*/
                     if (bricks[icol][irow].exist == 0) {
-                        contacty = 330 + (50 * irow);
+                        contacty = 500 + (50 * irow);
                     }
                     bricks[icol][irow].exist = 0;
-                    gravity = true;
+                    /*Silly, you had to change the gravity to false. that's why the border was in the way 
+                    Still need to fix the middle row bottom brick, because it needs the same thing as the bottom row. 
+                    Also, the border at the top is going off of the border */
+                    gravity = false;
+                    
                 }
             }
         }
