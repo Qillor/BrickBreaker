@@ -52,7 +52,7 @@ function contact() {
                 if ((bally - 25) >= ypos && (bally - 25) <= (ypos + 45)) {
                     /*Gotta figure out how to set contacty higher when the brick is missing*/
                     if (bricks[icol][irow].exist == 0) {
-                        contacty = 500 + (50 * irow);
+                        contacty = 330 + (50 * irow);
                     }
                     bricks[icol][irow].exist = 0;
                     /*Silly, you had to change the gravity to false. that's why the border was in the way 
