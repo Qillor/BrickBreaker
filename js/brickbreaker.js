@@ -6,22 +6,56 @@ var c = document.getElementById("myCanvas");
 var ctx = c.getContext("2d");
 var left = false;
 var right = false;
-var xaxis = 0;
-var ballx = 0;
-var bally = 0;
+var xaxis = c.width / 2-30;
+var ballx = c.width / 2;
+var bally = c.height - 35;
 var gravity = true;
 var gravityright = true;
+
+/*starting brick array, each item in the array will hold the x, and y position. Also, whether it exists or not. */
+var bricks = [];
+for (col = 0; col < 12; ++col) {
+    bricks[col] = [];
+    for (row = 0; row < 3; ++row) {
+        bricks[col][row] = { bx: 0, by: 0, exist: 1 };
+    }
+}
+
 /*Declaring Brick function, it draws the bricks on the canvas.*/
 function brick() {
     ctx.beginPath();
-    for (x = 2; x < 600; x += 50) {
-        for (y = 2; y < 150; y += 50) {
-            ctx.rect(x, y, 45, 45);
-            ctx.fillStyle = "#800080";
-            ctx.fill();
+    for (x = 0; x < 12; ++x) {
+        for (y = 0; y < 3; ++y) {
+            if (bricks[x][y].exist == 1) {
+                bricks[x][y].bx = x * 50;
+                bricks[x][y].by = y * 50;
+                ctx.rect(x * 50, y * 50, 45, 45);
+                ctx.fillStyle = "#800080";
+                ctx.fill();
+            }
         }
     }
     ctx.closePath();
+}
+/* Bally-25 indicates the top of the ball, so the top of the ball can hit the bottom of the brick and make the brick dissapear
+The xpos + 45 is the right side of the brick, ypos + 45 is the bottom of the brick. If all of the if statements are true,
+then the brick that got hit will dissapear.
+*/
+function contact() {
+    for (icol = 0; icol < 12; ++icol) {
+        for (irow = 0; irow < 3; ++irow) {
+            var xpos=bricks[icol][irow].bx;
+            var ypos=bricks[icol][irow].by;
+            if (ballx >= xpos && ballx <=(xpos + 45)) {
+                if ((bally - 25) >= ypos && (bally - 25) <= (ypos + 45)) {
+                    bricks[icol][irow].exist = 0;
+                    gravity = true;
+                }
+            }
+        }
+    }
+
+
 }
 /*Declaring Ball function, it draws the ball on the canvas.*/
 function ball() {
@@ -29,8 +63,6 @@ function ball() {
     ctx.arc(ballx, bally, 25, 0, 2 * Math.PI);
     ctx.stroke();
     ctx.closePath();
-
-    ctx.
 }
 /*Declaring Paddle function, it draws the paddle on the canvas.*/
 function paddle() {
@@ -40,21 +72,22 @@ function paddle() {
     ctx.fill();
     ctx.closePath();
 }
-/*All of the invidual functions to the Brickbreaker game.*/ 
+/*All of the invidual functions to the Brickbreaker game.*/
 function components() {
     ctx.clearRect(0, 0, c.width, c.height);
     ball();
     brick();
     paddle();
+    contact();
 
     /*Moves the ball left and right*/
     if (right == true)
         xaxis += 5;
-    if (left == true) 
+    if (left == true)
         xaxis -= 5;
-    
 
-/* Responsible for gravity up and down.*/
+
+    /* Responsible for gravity up and down.*/
     if (bally >= c.height - 35) {
         gravity = false;
     }
@@ -69,7 +102,7 @@ function components() {
     }
 
 
-/* Resposible for the gravity moving right and left*/
+    /* Resposible for the gravity moving right and left*/
     if (ballx >= c.width - 25) {
         gravityright = false;
     }
