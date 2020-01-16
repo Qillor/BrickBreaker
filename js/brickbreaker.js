@@ -4,22 +4,30 @@ var c = document.getElementById("myCanvas");
 /** @type {CanvasRenderingContext2D} */
 /*Declaring variables */
 var ctx = c.getContext("2d");
-var contacty = 330;
-var left = false;
-var right = false;
-var xaxis = c.width / 2 - 30;
-var ballx = c.width / 2;
-/*ball start pos */
-var bally = c.height - 35;
+var left;
+var right;
+var xaxis;
+var ballx;
+var bally;
 var gravity = true;
 var gravityright = true;
-
+var ballrate = 5;
 /*starting brick array, each item in the array will hold the x, and y position. Also, whether it exists or not. */
 var bricks = [];
-for (col = 0; col < 12; ++col) {
-    bricks[col] = [];
-    for (row = 0; row < 3; ++row) {
-        bricks[col][row] = { bx: 0, by: 0, exist: 1 };
+reset();
+
+/* Resetting variables to their initial values.*/
+function reset() {
+    ballx = c.width / 2;
+    bally = c.height - 35;
+    xaxis = c.width / 2 - 30;
+    left = false;
+    right = false;
+    for (col = 0; col < 12; ++col) {
+        bricks[col] = [];
+        for (row = 0; row < 3; ++row) {
+            bricks[col][row] = { bx: 0, by: 0, exist: 1 };
+        }
     }
 }
 
@@ -49,24 +57,19 @@ function contact() {
             var xpos = bricks[icol][irow].bx;
             var ypos = bricks[icol][irow].by;
             if (ballx >= xpos && ballx <= (xpos + 45)) {
-                if ((bally - 25) >= ypos && (bally - 25) <= (ypos + 45)) {
-                    /*Gotta figure out how to set contacty higher when the brick is missing*/
-                    if (bricks[icol][irow].exist == 0) {
-                        contacty = 330 + (50 * irow);
+                if (bricks[icol][irow].exist == 1 || bally - 25 <= 0) {
+                    if ((bally - 25) >= ypos && (bally - 25) <= (ypos + 45)) {
+                        bricks[icol][irow].exist = 0;
+                        gravity = true;
                     }
-                    bricks[icol][irow].exist = 0;
-                    /*Silly, you had to change the gravity to false. that's why the border was in the way 
-                    Still need to fix the middle row bottom brick, because it needs the same thing as the bottom row. 
-                    Also, the border at the top is going off of the border */
-                    gravity = false;
-                    
                 }
             }
         }
     }
-
-
 }
+
+
+
 /*Declaring Ball function, it draws the ball on the canvas.*/
 function ball() {
     ctx.beginPath();
@@ -82,7 +85,7 @@ function paddle() {
     ctx.fill();
     ctx.closePath();
 }
-/*All of the invidual functions to the Brickbreaker game.*/
+/*Calling all of the invidual functions to the Brickbreaker game.*/
 function components() {
     ctx.clearRect(0, 0, c.width, c.height);
     ball();
@@ -90,12 +93,16 @@ function components() {
     paddle();
     contact();
 
-    /*Moves the ball left and right*/
-    if (right == true)
-        xaxis += 5;
-    if (left == true)
-        xaxis -= 5;
-
+    /*Moves the paddle to the right*/
+    if (xaxis <= (c.width - 60)) {
+        if (right == true)
+            xaxis += 5;
+    }
+    /*Moves the paddle to the left*/
+    if (xaxis >= 0) {
+        if (left == true)
+            xaxis -= 5;
+    }
 
     /* Responsible for gravity up and down.*/
     if (ballx > xaxis && ballx < xaxis + 60) {
@@ -103,33 +110,36 @@ function components() {
             gravity = false;
         }
     }
-
-
-
-    if (bally <= c.height - contacty) {
-        gravity = true;
+    /*Brings up a dialogue box when the ball completely dissapears from the canvas */
+    if (bally > c.height + 30) {
+        var r = confirm("Game Over! \nWould you like to play again? \nPress 'OK' to play again. \nPress 'Cancel' to close the game.");
+        if (r == true) {
+            reset();
+    /*When cancel is pressed, the window is closed*/
+        } else {
+            window.close();
+        }
     }
-
-
+    /*Replaced the numbers with a ballrate variable, so I could change the speed of the game in one spot to be more efficient*/
     if (gravity) {
-        bally += 2;
+        bally += ballrate;
     } else {
-        bally -= 2;
+        bally -= ballrate;
     }
 
 
-    /* Resposible for the gravity moving right and left*/
+    /*Resposible for the gravity moving right and left*/
     if (ballx >= c.width - 25) {
         gravityright = false;
     }
     if (ballx <= 25) {
         gravityright = true;
     }
-
+    /* Gravity right control the right and left movement of the ball*/
     if (gravityright) {
-        ballx += 2;
+        ballx += ballrate;
     } else {
-        ballx -= 2;
+        ballx -= ballrate;
     }
 }
 /*Setting the variable of left and right to true, when the left / right key is pressed */
